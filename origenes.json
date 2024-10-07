@@ -1,0 +1,23 @@
+[
+    {
+        "id_origen": 1,
+        "nombre_origen": "eurostat_data",
+        "activo": true,
+        "horario_extraccion": "0 12 * * *", 
+        "id_caso_uso": 101
+    },
+    {
+        "id_origen": 2,
+        "nombre_origen": "subastas_galicia",
+        "activo": true,
+        "horario_extraccion": "0 6 * * *", 
+        "id_caso_uso": 102
+    },
+    {
+        "id_origen": 3,
+        "nombre_origen": "data_exporter_madrid",
+        "activo": false,
+        "horario_extraccion": "0 8 * * *", 
+        "id_caso_uso": 101
+    }
+]

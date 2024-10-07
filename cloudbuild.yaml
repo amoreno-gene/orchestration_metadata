@@ -1,0 +1,63 @@
+steps:
+  # Paso 1: Clonar el repositorio de GitHub utilizando el token desde Secret Manager
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: Clone GitHub repository
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        git clone https://$$GH_TOKEN@github.com/amoreno-gene/orchestration_metadata.git
+        cd orchestration_metadata
+    secretEnv: ['GH_TOKEN']  # Definimos GH_TOKEN desde Secret Manager
+
+  # Paso 2: Instalar dependencias de Python para conectar con Snowflake
+  - name: 'python:3.9'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        pip install -r requirements.txt
+
+  # Paso 3: Obtener secretos de Snowflake desde Secret Manager y exportarlos como variables de entorno
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: Get Snowflake secrets
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        export SNOWFLAKE_USER=$(gcloud secrets versions access latest --secret="SNOWFLAKE_USER")
+        export SNOWFLAKE_PASSWORD=$(gcloud secrets versions access latest --secret="SNOWFLAKE_PASSWORD")
+        export SNOWFLAKE_ACCOUNT=$(gcloud secrets versions access latest --secret="SNOWFLAKE_ACCOUNT")
+        export SNOWFLAKE_WAREHOUSE=$(gcloud secrets versions access latest --secret="SNOWFLAKE_WAREHOUSE")
+        export SNOWFLAKE_DATABASE=$(gcloud secrets versions access latest --secret="SNOWFLAKE_DATABASE")
+        export SNOWFLAKE_SCHEMA=$(gcloud secrets versions access latest --secret="SNOWFLAKE_SCHEMA")
+
+  # Paso 4: Ejecutar el script de sincronización con Snowflake
+  - name: 'python:3.9'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        python sync_metadata.py
+
+# Definir secretos disponibles desde Secret Manager
+availableSecrets:
+  secretManager:
+  - versionName: projects/extracciones-426907/secrets/GITHUB_TOKEN/versions/latest
+    env: GH_TOKEN  # Aquí se establece GH_TOKEN como variable de entorno
+
+  - versionName: projects/extracciones-426907/secrets/SNOWFLAKE_USER/versions/latest
+    env: SNOWFLAKE_USER  # Asignación de SNOWFLAKE_USER desde Secret Manager
+  - versionName: projects/extracciones-426907/secrets/SNOWFLAKE_PASSWORD/versions/latest
+    env: SNOWFLAKE_PASSWORD  # Asignación de SNOWFLAKE_PASSWORD desde Secret Manager
+  - versionName: projects/extracciones-426907/secrets/SNOWFLAKE_ACCOUNT/versions/latest
+    env: SNOWFLAKE_ACCOUNT  # Asignación de SNOWFLAKE_ACCOUNT desde Secret Manager
+  - versionName: projects/extracciones-426907/secrets/SNOWFLAKE_WAREHOUSE/versions/latest
+    env: SNOWFLAKE_WAREHOUSE  # Asignación de SNOWFLAKE_WAREHOUSE desde Secret Manager
+  - versionName: projects/extracciones-426907/secrets/SNOWFLAKE_DATABASE/versions/latest
+    env: SNOWFLAKE_DATABASE  # Asignación de SNOWFLAKE_DATABASE desde Secret Manager
+  - versionName: projects/extracciones-426907/secrets/SNOWFLAKE_SCHEMA/versions/latest
+    env: SNOWFLAKE_SCHEMA  # Asignación de SNOWFLAKE_SCHEMA desde Secret Manager
+
+options:
+  logging: CLOUD_LOGGING_ONLY

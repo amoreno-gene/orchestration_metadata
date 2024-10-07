@@ -1,0 +1,17 @@
+[
+    {
+        "id_caso_uso": 101,
+        "nombre_caso": "analisis_economico",
+        "activo": true
+    },
+    {
+        "id_caso_uso": 102,
+        "nombre_caso": "monitorizacion_subastas",
+        "activo": true
+    },
+    {
+        "id_caso_uso": 103,
+        "nombre_caso": "estudio_demografico",
+        "activo": false
+    }
+]

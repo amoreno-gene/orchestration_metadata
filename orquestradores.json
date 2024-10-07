@@ -1,0 +1,12 @@
+[
+    {
+        "id_orquestador": 1,
+        "nombre_orquestador": "orquestador_diario",
+        "activo": true
+    },
+    {
+        "id_orquestador": 2,
+        "nombre_orquestador": "orquestador_semanal",
+        "activo": false
+    }
+]

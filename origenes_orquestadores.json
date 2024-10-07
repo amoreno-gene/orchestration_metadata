@@ -1,0 +1,14 @@
+[
+    {
+        "id_orquestador": 1,
+        "id_origen": 1
+    },
+    {
+        "id_orquestador": 1,
+        "id_origen": 2
+    },
+    {
+        "id_orquestador": 2,
+        "id_origen": 3
+    }
+]
