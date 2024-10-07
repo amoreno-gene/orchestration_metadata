@@ -117,18 +117,16 @@ def sync_metadata():
             },
             {
                 "json_file": "origenes_orquestadores.json",
-                "table_name": "origenes_orquestadores",  # Cambiar el nombre de la tabla
+                "table_name": "origenes_orquestadores",
                 "create_sql": """
                     id_orquestador STRING,
                     id_origen STRING,
-                    PRIMARY KEY (id_orquestador, id_origen),  # Clave primaria compuesta
+                    PRIMARY KEY (id_orquestador, id_origen),
                     FOREIGN KEY (id_orquestador) REFERENCES orquestadores(id_orquestador),
                     FOREIGN KEY (id_origen) REFERENCES origenes(id_origen)
                 """
             }
         ]
-
-        # Crear las tablas si no existen y sincronizar los datos
         for metadata in metadatas:
             create_table_if_not_exists(conn, metadata["table_name"], metadata["create_sql"])
             sync_json_to_snowflake_table(conn, metadata["json_file"], metadata["table_name"], metadata["key_column"])
