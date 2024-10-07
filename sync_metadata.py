@@ -100,7 +100,7 @@ def sync_metadata():
                 "table_name": "casos_uso",
                 "create_sql": """
                     id_caso_uso STRING PRIMARY KEY,
-                    nombre STRING,
+                    nombre_caso STRING,
                     activo BOOLEAN
                 """,
                 "key_column": "id_caso_uso"
@@ -110,10 +110,21 @@ def sync_metadata():
                 "table_name": "orquestadores",
                 "create_sql": """
                     id_orquestador STRING PRIMARY KEY,
-                    nombre STRING,
+                    nombre_orquestrador STRING,
                     activo BOOLEAN
                 """,
                 "key_column": "id_orquestador"
+            },
+            {
+                "json_file": "origenes_orquestadores.json",
+                "table_name": "origenes_orquestadores",  # Cambiar el nombre de la tabla
+                "create_sql": """
+                    id_orquestador STRING,
+                    id_origen STRING,
+                    PRIMARY KEY (id_orquestador, id_origen),  # Clave primaria compuesta
+                    FOREIGN KEY (id_orquestador) REFERENCES orquestadores(id_orquestador),
+                    FOREIGN KEY (id_origen) REFERENCES origenes(id_origen)
+                """
             }
         ]
 
