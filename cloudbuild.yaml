@@ -18,21 +18,7 @@ steps:
       - |
         pip install -r requirements.txt
 
-  # Paso 3: Obtener secretos de Snowflake desde Secret Manager y exportarlos como variables de entorno
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: Get Snowflake secrets
-    entrypoint: bash
-    args:
-      - '-c'
-      - |
-        export SNOWFLAKE_USER=$(gcloud secrets versions access latest --secret="SNOWFLAKE_USER")
-        export SNOWFLAKE_PASSWORD=$(gcloud secrets versions access latest --secret="SNOWFLAKE_PASSWORD")
-        export SNOWFLAKE_ACCOUNT=$(gcloud secrets versions access latest --secret="SNOWFLAKE_ACCOUNT")
-        export SNOWFLAKE_WAREHOUSE=$(gcloud secrets versions access latest --secret="SNOWFLAKE_WAREHOUSE")
-        export SNOWFLAKE_DATABASE=$(gcloud secrets versions access latest --secret="SNOWFLAKE_DATABASE")
-        export SNOWFLAKE_SCHEMA=$(gcloud secrets versions access latest --secret="SNOWFLAKE_SCHEMA")
-
-  # Paso 4: Ejecutar el script de sincronización con Snowflake
+  # Paso 3: Ejecutar el script de sincronización con Snowflake
   - name: 'python:3.9'
     entrypoint: 'bash'
     args:

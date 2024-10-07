@@ -3,14 +3,14 @@ import os
 import snowflake.connector
 import logging
 
-# Configuración de Snowflake
-SNOWFLAKE_ACCOUNT = "tu_cuenta.snowflakecomputing.com"
-SNOWFLAKE_USER = "tu_usuario"
-SNOWFLAKE_PASSWORD = "tu_password"
-SNOWFLAKE_ROLE = "tu_rol"
-SNOWFLAKE_WAREHOUSE = "tu_warehouse"
-SNOWFLAKE_DATABASE = "tu_database"
-SNOWFLAKE_SCHEMA = "tu_schema"
+# Configuración de Snowflake usando variables de entorno
+SNOWFLAKE_ACCOUNT = os.getenv("SNOWFLAKE_ACCOUNT")
+SNOWFLAKE_USER = os.getenv("SNOWFLAKE_USER")
+SNOWFLAKE_PASSWORD = os.getenv("SNOWFLAKE_PASSWORD")
+SNOWFLAKE_ROLE = os.getenv("SNOWFLAKE_ROLE")
+SNOWFLAKE_WAREHOUSE = os.getenv("SNOWFLAKE_WAREHOUSE")
+SNOWFLAKE_DATABASE = os.getenv("SNOWFLAKE_DATABASE")
+SNOWFLAKE_SCHEMA = os.getenv("SNOWFLAKE_SCHEMA")
 
 # Configuración de logging
 logging.basicConfig(level=logging.INFO)
