@@ -8,45 +8,48 @@ steps:
       - |
         git clone https://$$GH_TOKEN@github.com/amoreno-gene/orchestration_metadata.git
         cd orchestration_metadata
-    secretEnv: ['GH_TOKEN']  # Definimos GH_TOKEN desde Secret Manager
+    secretEnv: ['GH_TOKEN']
 
-  # Paso 2: Instalar dependencias de Python
+  # Paso 2: Instalar dependencias de Python para conectar con Snowflake
   - name: 'python:3.9'
+    id: Install Python dependencies
     entrypoint: 'bash'
     args:
       - '-c'
       - |
+        python -m venv venv
+        . venv/bin/activate
         pip install -r requirements.txt
 
   # Paso 3: Obtener secretos de Snowflake desde Secret Manager y exportarlos como variables de entorno
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: Get Snowflake secrets
-    entrypoint: bash
-    args:
-      - '-c'
-      - |
-        export SNOWFLAKE_USER=$(gcloud secrets versions access latest --secret="SNOWFLAKE_USER")
-        export SNOWFLAKE_PASSWORD=$(gcloud secrets versions access latest --secret="SNOWFLAKE_PASSWORD")
-        export SNOWFLAKE_ACCOUNT=$(gcloud secrets versions access latest --secret="SNOWFLAKE_ACCOUNT")
-        export SNOWFLAKE_WAREHOUSE=$(gcloud secrets versions access latest --secret="SNOWFLAKE_WAREHOUSE")
-        export SNOWFLAKE_DATABASE=$(gcloud secrets versions access latest --secret="SNOWFLAKE_DATABASE")
-        export SNOWFLAKE_SCHEMA=$(gcloud secrets versions access latest --secret="SNOWFLAKE_SCHEMA")
-        export SNOWFLAKE_ROLE=$(gcloud secrets versions access latest --secret="SNOWFLAKE_ROLE")  # Agregar SNOWFLAKE_ROLE
-
-  # Paso 4: Ejecutar el script de sincronización con Snowflake
-  - name: 'python:3.9'
+  - name: 'python:3.9'  # Cambiado para usar la imagen de Python
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        python sync_metadata.py
+        . venv/bin/activate  # Asegúrate de que el entorno virtual esté activado
+        export SNOWFLAKE_USER=$$SNOWFLAKE_USER
+        export SNOWFLAKE_PASSWORD=$$SNOWFLAKE_PASSWORD
+        export SNOWFLAKE_ACCOUNT=$$SNOWFLAKE_ACCOUNT
+        export SNOWFLAKE_WAREHOUSE=$$SNOWFLAKE_WAREHOUSE
+        export SNOWFLAKE_DATABASE=$$SNOWFLAKE_DATABASE
+        export SNOWFLAKE_SCHEMA=$$SNOWFLAKE_SCHEMA
+        export SNOWFLAKE_SCHEMA=$$SNOWFLAKE_ROLE
+        python sync_metadata.py  # Ejecutar el script de sincronización
+    secretEnv:
+      - SNOWFLAKE_USER
+      - SNOWFLAKE_PASSWORD
+      - SNOWFLAKE_ACCOUNT
+      - SNOWFLAKE_WAREHOUSE
+      - SNOWFLAKE_DATABASE
+      - SNOWFLAKE_SCHEMA
+      - SNOWFLAKE_ROLE
 
 # Definir secretos disponibles desde Secret Manager
 availableSecrets:
   secretManager:
   - versionName: projects/extracciones-426907/secrets/GITHUB_TOKEN/versions/latest
-    env: GH_TOKEN  # Aquí se establece GH_TOKEN como variable de entorno
-
+    env: GH_TOKEN
   - versionName: projects/extracciones-426907/secrets/SNOWFLAKE_USER/versions/latest
     env: SNOWFLAKE_USER
   - versionName: projects/extracciones-426907/secrets/SNOWFLAKE_PASSWORD/versions/latest
@@ -60,7 +63,7 @@ availableSecrets:
   - versionName: projects/extracciones-426907/secrets/SNOWFLAKE_SCHEMA/versions/latest
     env: SNOWFLAKE_SCHEMA
   - versionName: projects/extracciones-426907/secrets/SNOWFLAKE_ROLE/versions/latest
-    env: SNOWFLAKE_ROLE  # Se agregó SNOWFLAKE_ROLE
+    env: SNOWFLAKE_ROLE
 
 options:
   logging: CLOUD_LOGGING_ONLY
