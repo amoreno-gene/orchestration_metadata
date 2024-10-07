@@ -12,6 +12,7 @@ steps:
 
   # Paso 2: Instalar dependencias de Python para conectar con Snowflake
   - name: 'python:3.9'
+    id: Install Python dependencies
     entrypoint: 'bash'
     args:
       - '-c'
@@ -20,20 +21,20 @@ steps:
         . venv/bin/activate
         pip install -r requirements.txt
 
-  # Paso 3: Exportar secretos de Snowflake como variables de entorno
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  # Paso 3: Obtener secretos de Snowflake desde Secret Manager y exportarlos como variables de entorno
+  - name: 'python:3.9'  # Cambiado para usar la imagen de Python
     entrypoint: 'bash'
     args:
       - '-c'
       - |
+        . venv/bin/activate  # Asegúrate de que el entorno virtual esté activado
         export SNOWFLAKE_USER=$$SNOWFLAKE_USER
         export SNOWFLAKE_PASSWORD=$$SNOWFLAKE_PASSWORD
         export SNOWFLAKE_ACCOUNT=$$SNOWFLAKE_ACCOUNT
         export SNOWFLAKE_WAREHOUSE=$$SNOWFLAKE_WAREHOUSE
         export SNOWFLAKE_DATABASE=$$SNOWFLAKE_DATABASE
         export SNOWFLAKE_SCHEMA=$$SNOWFLAKE_SCHEMA
-        . venv/bin/activate
-        python sync_metadata.py
+        python sync_metadata.py  # Ejecutar el script de sincronización
     secretEnv:
       - SNOWFLAKE_USER
       - SNOWFLAKE_PASSWORD
