@@ -110,7 +110,7 @@ def sync_metadata():
                 "table_name": "orquestadores",
                 "create_sql": """
                     id_orquestador STRING PRIMARY KEY,
-                    nombre_orquestrador STRING,
+                    nombre_orquestador STRING,
                     activo BOOLEAN
                 """,
                 "key_column": "id_orquestador"
