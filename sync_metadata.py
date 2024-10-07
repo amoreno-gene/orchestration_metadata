@@ -2,6 +2,22 @@ import json
 import os
 import snowflake.connector
 import logging
+import sys
+
+# Configuración de logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Verificar variables de entorno
+required_env_vars = [
+    "SNOWFLAKE_ACCOUNT", "SNOWFLAKE_USER", "SNOWFLAKE_PASSWORD", 
+    "SNOWFLAKE_ROLE", "SNOWFLAKE_WAREHOUSE", "SNOWFLAKE_DATABASE", "SNOWFLAKE_SCHEMA"
+]
+
+for var in required_env_vars:
+    if not os.getenv(var):
+        logger.error(f"La variable de entorno {var} no está definida. Saliendo.")
+        sys.exit(1)
 
 # Configuración de Snowflake usando variables de entorno
 SNOWFLAKE_ACCOUNT = os.getenv("SNOWFLAKE_ACCOUNT")
@@ -11,10 +27,6 @@ SNOWFLAKE_ROLE = os.getenv("SNOWFLAKE_ROLE")
 SNOWFLAKE_WAREHOUSE = os.getenv("SNOWFLAKE_WAREHOUSE")
 SNOWFLAKE_DATABASE = os.getenv("SNOWFLAKE_DATABASE")
 SNOWFLAKE_SCHEMA = os.getenv("SNOWFLAKE_SCHEMA")
-
-# Configuración de logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 # Función para conectar a Snowflake
 def get_snowflake_connection():
@@ -27,37 +39,43 @@ def get_snowflake_connection():
         database=SNOWFLAKE_DATABASE,
         schema=SNOWFLAKE_SCHEMA
     )
+    
+    # Verificar conexión
+    logger.info("Conexión a Snowflake establecida.")
     return conn
 
 # Función para crear la tabla si no existe
 def create_table_if_not_exists(conn, table_name, create_sql):
+    full_table_name = f"{SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA}.{table_name}"
     with conn.cursor() as cur:
         cur.execute(f"""
-        CREATE TABLE IF NOT EXISTS {table_name} (
+        CREATE TABLE IF NOT EXISTS {full_table_name} (
             {create_sql}
         );
         """)
-        logger.info(f"Tabla {table_name} verificada/creada.")
+        logger.info(f"Tabla {full_table_name} verificada/creada.")
 
 # Función para sincronizar los datos desde un archivo JSON a una tabla
 def sync_json_to_snowflake_table(conn, json_file, table_name, key_column):
+    full_table_name = f"{SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA}.{table_name}"
+    
     with open(json_file, 'r') as file:
         data = json.load(file)
 
     with conn.cursor() as cur:
-        for record in data['origenes']:
+        for record in data:
             keys = ', '.join(record.keys())
             values = ', '.join([f"'{v}'" for v in record.values()])
 
             # Comando MERGE para insertar o actualizar
             sql = f"""
-            MERGE INTO {table_name} USING (SELECT {values}) AS incoming({keys})
-            ON {table_name}.{key_column} = incoming.{key_column}
+            MERGE INTO {full_table_name} USING (SELECT {values}) AS incoming({keys})
+            ON {full_table_name}.{key_column} = incoming.{key_column}
             WHEN MATCHED THEN UPDATE SET {', '.join([f"{k} = incoming.{k}" for k in record.keys()])}
             WHEN NOT MATCHED THEN INSERT ({keys}) VALUES ({values});
             """
             cur.execute(sql)
-        logger.info(f"Datos sincronizados en la tabla {table_name} desde {json_file}.")
+        logger.info(f"Datos sincronizados en la tabla {full_table_name} desde {json_file}.")
 
 # Función principal para sincronizar todos los metadatos
 def sync_metadata():
@@ -104,8 +122,11 @@ def sync_metadata():
             create_table_if_not_exists(conn, metadata["table_name"], metadata["create_sql"])
             sync_json_to_snowflake_table(conn, metadata["json_file"], metadata["table_name"], metadata["key_column"])
 
+    except Exception as e:
+        logger.error(f"Error durante la sincronización de metadatos: {e}")
     finally:
         conn.close()
+        logger.info("Conexión a Snowflake cerrada.")
 
 if __name__ == "__main__":
     sync_metadata()
