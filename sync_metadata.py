@@ -56,7 +56,7 @@ def create_table_if_not_exists(conn, table_name, create_sql):
         logger.info(f"Tabla {full_table_name} verificada/creada.")
 
 # Función para sincronizar los datos desde un archivo JSON a una tabla
-def sync_json_to_snowflake_table(conn, json_file, table_name, key_column):
+def sync_json_to_snowflake_table(conn, json_file, table_name, key_columns):
     full_table_name = f"{SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA}.{table_name}"
     
     with open(json_file, 'r') as file:
@@ -67,10 +67,18 @@ def sync_json_to_snowflake_table(conn, json_file, table_name, key_column):
             keys = ', '.join(record.keys())
             values = ', '.join([f"'{v}'" for v in record.values()])
 
+            # Verificar si la clave es compuesta
+            if isinstance(key_columns, list):
+                # Si es una clave compuesta, construir el WHERE para todas las columnas de la clave
+                on_clause = ' AND '.join([f"{full_table_name}.{key} = incoming.{key}" for key in key_columns])
+            else:
+                # Si no es una clave compuesta, usar la única columna de clave
+                on_clause = f"{full_table_name}.{key_columns} = incoming.{key_columns}"
+
             # Comando MERGE para insertar o actualizar
             sql = f"""
             MERGE INTO {full_table_name} USING (SELECT {values}) AS incoming({keys})
-            ON {full_table_name}.{key_column} = incoming.{key_column}
+            ON {on_clause}
             WHEN MATCHED THEN UPDATE SET {', '.join([f"{k} = incoming.{k}" for k in record.keys()])}
             WHEN NOT MATCHED THEN INSERT ({keys}) VALUES ({values});
             """
