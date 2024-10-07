@@ -90,7 +90,6 @@ def sync_metadata():
     conn = get_snowflake_connection()
 
     try:
-        # Definir las tablas y columnas
         metadatas = [
             {
                 "json_file": "origenes.json",
@@ -118,7 +117,7 @@ def sync_metadata():
                 "table_name": "orquestadores",
                 "create_sql": """
                     id_orquestador STRING PRIMARY KEY,
-                    nombre_orquestador STRING,
+                    nombre_orquestrador STRING,
                     activo BOOLEAN
                 """,
                 "key_column": "id_orquestador"
@@ -132,12 +131,21 @@ def sync_metadata():
                     PRIMARY KEY (id_orquestador, id_origen),
                     FOREIGN KEY (id_orquestador) REFERENCES orquestadores(id_orquestador),
                     FOREIGN KEY (id_origen) REFERENCES origenes(id_origen)
-                """
+                """,
+                "key_columns": ["id_orquestador", "id_origen"]
             }
         ]
+        
+        # Procesar cada metadata
         for metadata in metadatas:
             create_table_if_not_exists(conn, metadata["table_name"], metadata["create_sql"])
-            sync_json_to_snowflake_table(conn, metadata["json_file"], metadata["table_name"], metadata["key_column"])
+            # Aquí se verifica si existe "key_columns", si no se utiliza "key_column"
+            sync_json_to_snowflake_table(
+                conn, 
+                metadata["json_file"], 
+                metadata["table_name"], 
+                metadata.get("key_columns", metadata.get("key_column"))
+            )
 
     except Exception as e:
         logger.error(f"Error durante la sincronización de metadatos: {e}")
