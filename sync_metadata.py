@@ -49,7 +49,7 @@ def create_table_if_not_exists(conn, table_name, create_sql):
     full_table_name = f"{SNOWFLAKE_DATABASE}.{SNOWFLAKE_SCHEMA}.{table_name}"
     with conn.cursor() as cur:
         cur.execute(f"""
-        CREATE TABLE IF NOT EXISTS {full_table_name} (
+        CREATE OR REPLACE TABLE {full_table_name} (
             {create_sql}
         );
         """)
