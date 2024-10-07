@@ -22,6 +22,7 @@ steps:
         pip install -r requirements.txt
 
   # Paso 3: Obtener secretos de Snowflake desde Secret Manager y exportarlos como variables de entorno
+
   - name: 'python:3.9'  # Cambiado para usar la imagen de Python
     entrypoint: 'bash'
     args:
@@ -34,7 +35,7 @@ steps:
         export SNOWFLAKE_WAREHOUSE=$$SNOWFLAKE_WAREHOUSE
         export SNOWFLAKE_DATABASE=$$SNOWFLAKE_DATABASE
         export SNOWFLAKE_SCHEMA=$$SNOWFLAKE_SCHEMA
-        export SNOWFLAKE_SCHEMA=$$SNOWFLAKE_ROLE
+        export SNOWFLAKE_ROLE=$$SNOWFLAKE_ROLE
         python sync_metadata.py  # Ejecutar el script de sincronización
     secretEnv:
       - SNOWFLAKE_USER
