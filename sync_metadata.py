@@ -108,6 +108,7 @@ def sync_metadata():
                 "create_sql": """
                     id_caso_uso STRING PRIMARY KEY,
                     nombre_caso STRING,
+                    area_negocio STRING,
                     activo BOOLEAN
                 """,
                 "key_column": "id_caso_uso"

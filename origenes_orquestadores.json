@@ -8,7 +8,15 @@
         "id_origen": 2
     },
     {
-        "id_orquestador": 2,
+        "id_orquestador": 1,
         "id_origen": 3
+    },
+    {
+        "id_orquestador": 1,
+        "id_origen": 4
+    },
+    {
+        "id_orquestador": 1,
+        "id_origen": 5
     }
 ]

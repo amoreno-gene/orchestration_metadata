@@ -1,17 +1,22 @@
 [
     {
         "id_caso_uso": 101,
-        "nombre_caso": "analisis_economico",
-        "activo": true
+        "nombre_caso": "eurostat",
+        "activo": true,
+        "area_negocio": "trading"
     },
     {
         "id_caso_uso": 102,
-        "nombre_caso": "monitorizacion_subastas",
-        "activo": true
+        "nombre_caso": "subastas",
+        "activo": true,
+        "area_negocio": "consultoria"
     },
+    
     {
         "id_caso_uso": 103,
-        "nombre_caso": "estudio_demografico",
-        "activo": false
+        "nombre_caso": "anuario",
+        "activo": true,
+        "area_negocio": "consultoria"
     }
 ]
+
