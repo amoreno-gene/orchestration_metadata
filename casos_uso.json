@@ -8,7 +8,7 @@
     {
         "id_caso_uso": 102,
         "nombre_caso": "subastas",
-        "activo": true,
+        "activo": false,
         "area_negocio": "consultoria"
     },
     
