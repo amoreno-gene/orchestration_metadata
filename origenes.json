@@ -13,13 +13,13 @@
     },
     {
         "id_origen": 4,
-        "nombre_origen": "extract_castillayleon_subastas_exporter",
+        "nombre_origen": "castillayleon_subastas_exporter",
         "activo": false,
         "id_caso_uso": 102
     },
         {
         "id_origen": 5,
-        "nombre_origen": "extract_galicia_subastas_cuadro_resumen_exporter",
+        "nombre_origen": "galicia_subastas_cuadro_resumen_exporter",
         "activo": true,
         "id_caso_uso": 102
     },
