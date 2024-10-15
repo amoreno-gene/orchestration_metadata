@@ -17,7 +17,7 @@
         "activo": false,
         "id_caso_uso": 102
     },
-        {
+    {
         "id_origen": 5,
         "nombre_origen": "galicia_subastas_cuadro_resumen_exporter",
         "activo": true,
@@ -26,6 +26,12 @@
     {
         "id_origen": 3,
         "nombre_origen": "cereales_anuario_historico",
+        "activo": true,
+        "id_caso_uso": 103
+    },
+    {
+        "id_origen": 6,
+        "nombre_origen": "ifn4",
         "activo": true,
         "id_caso_uso": 103
     }

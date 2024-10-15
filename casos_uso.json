@@ -15,6 +15,13 @@
     {
         "id_caso_uso": 103,
         "nombre_caso": "anuario",
+        "activo": false,
+        "area_negocio": "consultoria"
+    },
+
+    {
+        "id_caso_uso": 104,
+        "nombre_caso": "forestal",
         "activo": true,
         "area_negocio": "consultoria"
     }

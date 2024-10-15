@@ -18,5 +18,9 @@
     {
         "id_orquestador": 1,
         "id_origen": 5
+    },
+    {
+        "id_orquestador": 1,
+        "id_origen": 6
     }
 ]
