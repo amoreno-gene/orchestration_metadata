@@ -32,7 +32,7 @@
     {
         "id_origen": 6,
         "nombre_origen": "ifn4",
-        "activo": true,
+        "activo": false,
         "id_caso_uso": 104
     }
 ]
