@@ -2,7 +2,7 @@
     {
         "id_origen": 1,
         "nombre_origen": "eurostat_data",
-        "activo": true,
+        "activo": false,
         "id_caso_uso": 101
     },
     {
