@@ -34,5 +34,11 @@
         "nombre_origen": "ifn4",
         "activo": false,
         "id_caso_uso": 104
+    },
+    {
+        "id_origen": 7,
+        "nombre_origen": "mfe50",
+        "activo": true,
+        "id_caso_uso": 104
     }
 ]
