@@ -18,7 +18,6 @@
         "activo": false,
         "area_negocio": "consultoria"
     },
-
     {
         "id_caso_uso": 104,
         "nombre_caso": "forestal",

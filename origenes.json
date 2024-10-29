@@ -37,8 +37,8 @@
     },
     {
         "id_origen": 7,
-        "nombre_origen": "mfe50",
-        "activo": false,
+        "nombre_origen": "mfe50_prueba",
+        "activo": true,
         "id_caso_uso": 104
     }
 ]
