@@ -6,7 +6,7 @@
     },
     {
         "id_orquestador": 2,
-        "nombre_orquestador": "orquestador_semanal",
+        "nombre_orquestador": "orquestador_mensual",
         "activo": true
     }
 

@@ -1,6 +1,6 @@
 [
     {
-        "id_orquestador": 1,
+        "id_orquestador": 2,
         "id_origen": 1
     },
     {
@@ -24,7 +24,7 @@
         "id_origen": 6
     },
     {
-        "id_orquestador": 2,
+        "id_orquestador": 1,
         "id_origen": 7
     }
 ]
